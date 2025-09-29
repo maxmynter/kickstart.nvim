@@ -1,0 +1,17 @@
+return {}
+-- 	Rest cannot install on the current config, I comment it out so that it
+-- 	doesn't try everytime I start
+-- 	{
+--   'rest-nvim/rest.nvim',
+--   dependencies = {
+--     'nvim-treesitter/nvim-treesitter',
+--     opts = function(_, opts)
+--       opts.ensure_installed = opts.ensure_installed or {}
+--       table.insert(opts.ensure_installed, 'http')
+--     end,
+--   },
+--   keys = {
+--     { '<leader>rr', '<cmd>Rest run<cr>', desc = '[R]un [R]est commmand under cursor' },
+--     { '<leader>ro', '<cmd>Rest open<cr>', desc = '[R]est [O]pen results pane' },
+--   },
+-- }

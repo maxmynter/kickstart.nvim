@@ -205,6 +205,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- [[Add Captalized Commands aliases]]
+vim.cmd 'command! W w'
+vim.cmd 'command! Wq wq'
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -218,6 +222,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
+
+-- Spellchecking
+vim.opt.spelllang = 'en_us'
+vim.o.spell = false
+function ToggleSpellcheck()
+  vim.o.spell = not vim.o.spell
+end
+vim.keymap.set('n', '<leader>sc', ToggleSpellcheck, { desc = '[S]pell[c]heck' })
+
+-- Open file explorer with `\\`
+vim.keymap.set('n', '\\', '<cmd>:Explore<CR>', { desc = 'Open file explorer' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -344,8 +359,13 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>s', group = '[S]earch' },
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]est / [R]ename' },
+        { '<leader>s', group = '[S]earch / [S]pell' },
+        { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
+        { '<leader>g', group = '[G]it' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -682,7 +702,27 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
-        --
+        gopls = {},
+        markdown_oxide = {},
+        html = {},
+        zls = {},
+        cssls = {},
+        tinymist = {},
+        nil_ls = {},
+        hls = {},
+        svelte = {},
+        terraformls = {},
+        yamlls = {},
+        clangd = {},
+        docker_compose_language_service = {},
+        dockerls = {},
+        ruff = {},
+        ts_ls = {},
+        rust_analyzer = {
+          on_attach = function(client, bufnr)
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+          end,
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -884,6 +924,41 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
+      local function make_transparent()
+        local high_contrast_blue = '#9EDDFF'
+        -- Make (parts of) background transparent
+        vim.api.nvim_set_hl(0, 'Normal', { bg = 'None' })
+        vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'None' })
+        vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'None' })
+
+        vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'None' })
+        vim.api.nvim_set_hl(0, 'WinSeparator', { bg = 'None' })
+        vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'None' })
+
+        -- Set colors to high contrast when
+        vim.api.nvim_set_hl(0, 'LineNr', { fg = high_contrast_blue })
+        vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = high_contrast_blue })
+        vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = high_contrast_blue })
+        vim.api.nvim_set_hl(0, 'Comment', { fg = high_contrast_blue })
+
+        -- You can configure highlights by doing something like:
+        vim.cmd.hi 'Comment gui=none'
+      end
+
+      local function remove_transparency()
+        vim.cmd.colorscheme 'tokyonight-night'
+      end
+
+      local is_transparent = true
+
+      local function toggle_transparency()
+        is_transparent = not is_transparent
+        if is_transparent then
+          make_transparent()
+        else
+          remove_transparency()
+        end
+      end
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
@@ -894,7 +969,10 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.o.background = 'dark'
       vim.cmd.colorscheme 'tokyonight-night'
+      make_transparent()
+      vim.keymap.set('n', '<leader>tt', toggle_transparency, { noremap = true, silent = true, desc = '[T]oggle Background [T]ransparency' })
     end,
   },
 
@@ -924,7 +1002,35 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup {
+        use_icons = vim.g.have_nerd_font,
+        content = {
+          active = function()
+            local mode, mode_hl = statusline.section_mode { trunc_width = 120 }
+            local git = statusline.section_git { trunc_width = 75 }
+            local diagnostics = statusline.section_diagnostics { trunc_width = 75 }
+            local filename = statusline.section_filename { trunc_width = 140 }
+            local fileinfo = statusline.section_fileinfo { trunc_width = 120 }
+            local search = statusline.section_searchcount { trunc_width = 75 }
+
+            local location = function()
+              local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+              local total_lines = vim.api.nvim_buf_line_count(0)
+              local percent = math.floor(row / total_lines * 100.0)
+              return string.format('%d:%d %%', row, col, percent)
+            end
+            return statusline.combine_groups {
+              { hl = mode_hl, strings = { mode } },
+              { hl = 'MiniStatuslineDevinfo', strings = { git, diagnostics } },
+              '%<', -- Mark general truncate point
+              { hl = 'MiniStatuslineFilename', strings = { filename } },
+              '%=', -- End left alignment
+              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+              { hl = mode_hl, strings = { location(), search, '%p%%' } },
+            }
+          end,
+        },
+      }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -984,7 +1090,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
