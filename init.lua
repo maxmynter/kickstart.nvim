@@ -715,7 +715,6 @@ require('lazy').setup({
         zls = {},
         cssls = {},
         tinymist = {},
-        hls = {},
         svelte = {},
         terraformls = {},
         yamlls = {},
@@ -779,6 +778,10 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- HLS installed via Nix (Mason can't install it without ghcup)
+      vim.lsp.config('hls', { capabilities = capabilities })
+      vim.lsp.enable('hls')
     end,
   },
 
