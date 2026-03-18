@@ -1061,8 +1061,32 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    config = function()
-      -- Enable treesitter-based highlighting
+    opts = {
+      ensure_installed = {
+        'python',
+        'lua',
+        'go',
+        'rust',
+        'haskell',
+        'javascript',
+        'typescript',
+        'html',
+        'css',
+        'json',
+        'yaml',
+        'toml',
+        'markdown',
+        'markdown_inline',
+        'bash',
+        'nix',
+        'vim',
+        'vimdoc',
+      },
+      auto_install = true,
+    },
+    config = function(_, opts)
+      require('nvim-treesitter').setup(opts)
+      -- Enable treesitter-based highlighting for all buffers
       vim.api.nvim_create_autocmd('FileType', {
         callback = function()
           pcall(vim.treesitter.start)
