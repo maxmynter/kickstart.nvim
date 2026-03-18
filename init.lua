@@ -715,7 +715,6 @@ require('lazy').setup({
         zls = {},
         cssls = {},
         tinymist = {},
-        nil_ls = {},
         hls = {},
         svelte = {},
         terraformls = {},
