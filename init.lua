@@ -365,6 +365,7 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>c', group = '[C]ode' },
+        { '<leader>d', group = '[D]ebug' },
         { '<leader>s', group = '[S]earch / [S]pell' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>g', group = '[G]it' },
@@ -1073,7 +1074,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
