@@ -694,7 +694,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         nil_ls = {},
-        pyright = {},
         gopls = {},
         markdown_oxide = {},
         html = {},
@@ -708,6 +707,16 @@ require('lazy').setup({
         docker_compose_language_service = {},
         dockerls = {},
         ruff = {},
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = 'all',
+                diagnosticMode = 'openFilesOnly',
+              },
+            },
+          },
+        },
         ts_ls = {},
         rust_analyzer = {
           on_attach = function(client, bufnr)
