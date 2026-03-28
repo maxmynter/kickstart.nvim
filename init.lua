@@ -777,7 +777,7 @@ require('lazy').setup({
       }
 
       -- HLS installed via Nix (Mason can't install it without ghcup)
-      vim.lsp.config('hls', { capabilities = capabilities, settings = { haskell = { formattingProvider = 'fourmolu' } } })
+      vim.lsp.config('hls', { capabilities = capabilities, settings = { haskell = { formattingProvider = 'ormolu' } } })
       vim.lsp.enable 'hls'
     end,
   },
