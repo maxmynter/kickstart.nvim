@@ -756,6 +756,8 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+
+        'haskell', -- For Haskell, duh
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -775,7 +777,7 @@ require('lazy').setup({
       }
 
       -- HLS installed via Nix (Mason can't install it without ghcup)
-      vim.lsp.config('hls', { capabilities = capabilities })
+      vim.lsp.config('hls', { capabilities = capabilities, settings = { haskell = { formattingProvider = 'fourmolu' } } })
       vim.lsp.enable 'hls'
     end,
   },
