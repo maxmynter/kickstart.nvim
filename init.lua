@@ -1058,15 +1058,13 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = { auto_install = true },
+    opts = {
+      auto_install = true,
+      highlight = { enable = true },
+      indent = { enable = true },
+    },
     config = function(_, opts)
-      require('nvim-treesitter').setup(opts)
-      -- Enable treesitter-based highlighting for all buffers
-      vim.api.nvim_create_autocmd('FileType', {
-        callback = function()
-          pcall(vim.treesitter.start)
-        end,
-      })
+      require('nvim-treesitter.configs').setup(opts)
     end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
