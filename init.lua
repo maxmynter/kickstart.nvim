@@ -711,7 +711,7 @@ require('lazy').setup({
           settings = {
             basedpyright = {
               analysis = {
-                typeCheckingMode = 'all',
+                typeCheckingMode = 'standard', -- 'all' for hardest, 'strict' for default, 'standard' to match pyright
                 diagnosticMode = 'openFilesOnly',
               },
             },
