@@ -827,6 +827,7 @@ require('lazy').setup({
     'saghen/blink.cmp',
     event = 'VimEnter',
     version = '1.*',
+    build = 'cargo build --release',
     dependencies = {
       -- Snippet Engine
       {
@@ -1064,7 +1065,7 @@ require('lazy').setup({
       indent = { enable = true },
     },
     config = function(_, opts)
-      require('nvim-treesitter.configs').setup(opts)
+      require('nvim-treesitter').setup(opts)
     end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
