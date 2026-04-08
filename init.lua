@@ -1056,15 +1056,17 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master', -- main branch requires nvim 0.12+; master is the stable legacy API
     build = ':TSUpdate',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
+      ensure_installed = { 'haskell', 'lua', 'vim', 'vimdoc', 'bash', 'markdown', 'markdown_inline' },
       auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
     },
     config = function(_, opts)
-      require('nvim-treesitter').setup(opts)
+      require('nvim-treesitter.configs').setup(opts)
     end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
