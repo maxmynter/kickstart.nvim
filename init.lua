@@ -1062,7 +1062,8 @@ require('lazy').setup({
     opts = {
       ensure_installed = { 'haskell', 'lua', 'vim', 'vimdoc', 'bash', 'markdown', 'markdown_inline' },
       auto_install = true,
-      highlight = { enable = true },
+      -- TODO: re-enable python when migrating to nvim 0.12 (except* anonymous node incompatible with 0.11 query engine)
+      highlight = { enable = true, disable = { 'python' } },
       indent = { enable = true },
     },
     config = function(_, opts)
